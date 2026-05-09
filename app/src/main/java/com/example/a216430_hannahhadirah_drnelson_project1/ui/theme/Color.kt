@@ -1,4 +1,4 @@
-package com.example.a216430_hannahhadirah_drnelson_lab4.ui.theme
+package com.example.a216430_hannahhadirah_drnelson_project1.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

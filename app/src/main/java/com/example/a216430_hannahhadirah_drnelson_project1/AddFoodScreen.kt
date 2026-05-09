@@ -1,21 +1,18 @@
-package com.example.a216430_hannahhadirah_drnelson_lab4
+package com.example.a216430_hannahhadirah_drnelson_project1
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.background
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import java.time.LocalDate
-import com.example.a216430_hannahhadirah_drnelson_lab4.AppHeader
-import com.example.a216430_hannahhadirah_drnelson_lab4.FoodItem
-import com.example.a216430_hannahhadirah_drnelson_lab4.FoodViewModel
 
 @Composable
 fun AddFoodScreen(navController: NavController, viewModel: FoodViewModel) {
@@ -28,10 +25,13 @@ fun AddFoodScreen(navController: NavController, viewModel: FoodViewModel) {
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
-            .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f))
+            .background(
+                MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.15f)
+            )
+            .verticalScroll(rememberScrollState())
     ) {
 
-//header
+        // header
         AppHeader(
             title = "Add Food",
             subtitle = "Track expiry dates",
@@ -45,9 +45,13 @@ fun AddFoodScreen(navController: NavController, viewModel: FoodViewModel) {
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(12.dp)
         ) {
+
             Column(modifier = Modifier.padding(12.dp)) {
 
-                Text("Food Details", fontWeight = FontWeight.Bold)
+                Text(
+                    "Food Details",
+                    fontWeight = FontWeight.Bold
+                )
 
                 Spacer(modifier = Modifier.height(8.dp))
 
@@ -58,7 +62,7 @@ fun AddFoodScreen(navController: NavController, viewModel: FoodViewModel) {
                     modifier = Modifier.fillMaxWidth()
                 )
 
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(10.dp))
 
                 TextField(
                     value = expiryDate,
@@ -77,6 +81,7 @@ fun AddFoodScreen(navController: NavController, viewModel: FoodViewModel) {
 
                 Spacer(modifier = Modifier.height(16.dp))
 
+                // save button
                 Button(
                     onClick = {
                         try {
@@ -93,7 +98,10 @@ fun AddFoodScreen(navController: NavController, viewModel: FoodViewModel) {
                     shape = RoundedCornerShape(16.dp),
                     elevation = ButtonDefaults.buttonElevation(6.dp)
                 ) {
-                    Text("Save Food", color = MaterialTheme.colorScheme.onPrimary)
+                    Text(
+                        "Save Food",
+                        color = MaterialTheme.colorScheme.onPrimary
+                    )
                 }
             }
         }
@@ -101,7 +109,6 @@ fun AddFoodScreen(navController: NavController, viewModel: FoodViewModel) {
         Spacer(modifier = Modifier.height(16.dp))
 
         // back button
-
         Button(
             onClick = { navController.navigate("home") },
             modifier = Modifier.fillMaxWidth()

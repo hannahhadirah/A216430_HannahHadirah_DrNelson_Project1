@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.a216430_hannahhadirah_drnelson_lab4"
+    namespace = "com.example.a216430_hannahhadirah_drnelson_project1"
     compileSdk {
         version = release(36) {
             minorApiLevel = 1
@@ -12,7 +12,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.example.a216430_hannahhadirah_drnelson_lab4"
+        applicationId = "com.example.a216430_hannahhadirah_drnelson_project1"
         minSdk = 24
         targetSdk = 36
         versionCode = 1

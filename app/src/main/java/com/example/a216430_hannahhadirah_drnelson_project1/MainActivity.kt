@@ -1,4 +1,4 @@
-package com.example.a216430_hannahhadirah_drnelson_lab4
+package com.example.a216430_hannahhadirah_drnelson_project1
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -15,18 +15,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.FloatingActionButton
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.material3.Text
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.MaterialTheme
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.example.a216430_hannahhadirah_drnelson_lab4.HomeScreen
-import com.example.a216430_hannahhadirah_drnelson_lab4.AddFoodScreen
-import com.example.a216430_hannahhadirah_drnelson_lab4.FoodDetailScreen
-import com.example.a216430_hannahhadirah_drnelson_lab4.RecipeScreen
-import com.example.a216430_hannahhadirah_drnelson_lab4.FoodViewModel
-import com.example.a216430_hannahhadirah_drnelson_lab4.ui.theme.A216430_HannahHadirah_DrNelson_Lab4Theme
+import com.example.a216430_hannahhadirah_drnelson_project1.ui.theme.A216430_HannahHadirah_DrNelson_Lab4Theme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -53,7 +49,19 @@ fun FreshKeeperApp(modifier: Modifier = Modifier) {
 
     val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
 
+//    provides a basic app layout structure (like frame)
     Scaffold(
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = {
+                    navController.navigate("addFood")
+                },
+                containerColor = MaterialTheme.colorScheme.primary
+            ) {
+                Text("+", fontSize = 24.sp)
+            }
+        },
+
         bottomBar = {
 
             Card(
@@ -131,34 +139,56 @@ fun FreshKeeperApp(modifier: Modifier = Modifier) {
                         },
                         label = { Text("Recipes") }
                     )
+
+                    // summary navigation
+                    NavigationBarItem(
+                        selected = currentRoute == "summary",
+                        onClick = {
+                            navController.navigate("summary") {
+                                launchSingleTop = true
+                            }
+                        },
+                        icon = {
+                            Text("📊", fontSize = 18.sp)
+                        },
+                        label = { Text("Summary") }
+                    )
                 }
             }
         }
     ) { innerPadding ->
 
+//  defines all screens in the app and maps each route to a composable screen
         NavHost(
             navController = navController,
             startDestination = "home",
             modifier = Modifier.padding(innerPadding)
         ) {
 
-            composable("home") {
-                HomeScreen(navController, viewModel)
-            }
+            composable("home") { HomeScreen(navController, viewModel) }
 
-            composable("addFood") {
-                AddFoodScreen(navController, viewModel)
-            }
+            composable("addFood") { AddFoodScreen(navController, viewModel) }
 
-            composable("details") {
-                FoodDetailScreen(navController, viewModel)
-            }
+            composable("details") { FoodDetailScreen(navController, viewModel) }
 
-            composable("recipes") {
-                RecipeScreen(navController, viewModel)
+            composable("recipes") { RecipeScreen(navController, viewModel) }
+
+            composable("summary") { SummaryScreen(navController, viewModel) }
+
+            composable("foodDetail/{index}") { backStackEntry ->
+                val index = backStackEntry.arguments?.getString("index")?.toIntOrNull()
+
+                FoodDetail(
+                    navController = navController,
+                    viewModel = viewModel,
+                    index = index
+                )
             }
         }
     }
 }
 
 
+
+//concept from lectures: 1) State management → ViewModel + mutableStateListOf
+//2) Navigation structure → NavController + NavHost

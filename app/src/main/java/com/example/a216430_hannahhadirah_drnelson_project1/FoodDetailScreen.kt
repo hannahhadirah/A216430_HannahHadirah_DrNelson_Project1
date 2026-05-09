@@ -1,7 +1,8 @@
-package com.example.a216430_hannahhadirah_drnelson_lab4
+package com.example.a216430_hannahhadirah_drnelson_project1
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -12,12 +13,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import com.example.a216430_hannahhadirah_drnelson_lab4.AppHeader
-import com.example.a216430_hannahhadirah_drnelson_lab4.FoodViewModel
 
 @Composable
 fun FoodDetailScreen(navController: NavController, viewModel: FoodViewModel) {
@@ -27,8 +25,11 @@ fun FoodDetailScreen(navController: NavController, viewModel: FoodViewModel) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f))
+            .background(
+                MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.15f)
+            )
             .padding(horizontal = 16.dp)
+
     ) {
 
         // header
@@ -44,23 +45,57 @@ fun FoodDetailScreen(navController: NavController, viewModel: FoodViewModel) {
 
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+            verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
 
 // empty state
             if (foodList.isEmpty()) {
                 item {
-                    Text(
-                        "No food added yet",
-                        modifier = Modifier.padding(16.dp),
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                        shape = RoundedCornerShape(20.dp),
+                        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
+                    ) {
+
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(24.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+
+                            Text(
+                                "📦",
+                                fontSize = 42.sp
+                            )
+
+                            Spacer(modifier = Modifier.height(10.dp))
+
+                            Text(
+                                "No Food Added Yet",
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 18.sp
+                            )
+
+                            Spacer(modifier = Modifier.height(4.dp))
+
+                            Text(
+                                "Start adding food items to track expiry dates",
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                        }
+                    }
                 }
             } else {
 
                 // normal list
 
-                items(foodList) { food ->
+                items(foodList.withIndex().toList()) { item ->
+
+                    val index = item.index
+                    val food = item.value
 
                     val daysLeft = viewModel.getDaysLeft(food.expiryDate)
 
@@ -77,7 +112,11 @@ fun FoodDetailScreen(navController: NavController, viewModel: FoodViewModel) {
                     }
 
                     Card(
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable {
+                                navController.navigate("foodDetail/$index")
+                            },
                         shape = RoundedCornerShape(18.dp)
                     ) {
 
@@ -88,25 +127,11 @@ fun FoodDetailScreen(navController: NavController, viewModel: FoodViewModel) {
                             verticalAlignment = Alignment.CenterVertically
                         ) {
 
-                            Box(
-                                modifier = Modifier
-                                    .clip(RoundedCornerShape(12.dp))
-                                    .background(statusColor)
-                                    .padding(horizontal = 10.dp, vertical = 6.dp)
-                            ) {
-                                Text(
-                                    "$daysLeft d",
-                                    color = Color.White,
-                                    fontSize = 12.sp,
-                                    fontWeight = FontWeight.Bold
-                                )
-                            }
 
                             Spacer(modifier = Modifier.width(12.dp))
 
                             Column(modifier = Modifier.weight(1f)) {
                                 Text(food.name, fontWeight = FontWeight.Bold)
-                                Text("Expiry: ${food.expiryDate}")
                             }
 
                             Box(

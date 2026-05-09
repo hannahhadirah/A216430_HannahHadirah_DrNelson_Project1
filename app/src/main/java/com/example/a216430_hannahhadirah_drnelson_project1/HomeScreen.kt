@@ -1,4 +1,4 @@
-package com.example.a216430_hannahhadirah_drnelson_lab4
+package com.example.a216430_hannahhadirah_drnelson_project1
 
 import androidx.compose.runtime.*
 import androidx.compose.foundation.layout.*
@@ -20,7 +20,8 @@ import androidx.compose.foundation.Image
 import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavController
 import androidx.compose.foundation.layout.ColumnScope
-import com.example.a216430_hannahhadirah_drnelson_lab4.FoodViewModel
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 
 @Composable
 fun HomeScreen(navController: NavController, viewModel: FoodViewModel) {
@@ -33,8 +34,11 @@ fun HomeScreen(navController: NavController, viewModel: FoodViewModel) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f))
+            .background(
+                MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.15f)
+            )
             .padding(16.dp)
+            .verticalScroll(rememberScrollState())
     ) {
 //header
         AppHeader(
@@ -48,9 +52,10 @@ fun HomeScreen(navController: NavController, viewModel: FoodViewModel) {
         Card(
             shape = RoundedCornerShape(24.dp),
             colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.primary
+                containerColor = MaterialTheme.colorScheme.primary,
             ),
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            elevation = CardDefaults.cardElevation(defaultElevation = 10.dp)
         ) {
             Row(
                 modifier = Modifier
@@ -78,7 +83,7 @@ fun HomeScreen(navController: NavController, viewModel: FoodViewModel) {
 
                     Text(
                         "Track your food and reduce waste",
-                        fontSize = 13.sp,
+                        fontSize = 14.sp,
                         color = MaterialTheme.colorScheme.onPrimary
                     )
                 }
@@ -87,30 +92,6 @@ fun HomeScreen(navController: NavController, viewModel: FoodViewModel) {
 
         Spacer(modifier = Modifier.height(18.dp))
 
-        // buttons quick actions
-        Text("Quick Actions", fontWeight = FontWeight.Bold)
-
-        Spacer(modifier = Modifier.height(10.dp))
-
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-
-            ActionCard(
-                title = "Add Food",
-                icon = "➕",
-                color = MaterialTheme.colorScheme.primaryContainer,
-                onClick = { navController.navigate("addFood") }
-            )
-
-            ActionCard(
-                title = "View List",
-                icon = "📋",
-                color = MaterialTheme.colorScheme.tertiaryContainer,
-                onClick = { navController.navigate("details") }
-            )
-        }
 
         Spacer(modifier = Modifier.height(18.dp))
 
@@ -118,10 +99,33 @@ fun HomeScreen(navController: NavController, viewModel: FoodViewModel) {
         ExpandCard(
             title = "Recently Added",
             expanded = expandedRecent,
-            onClick = { expandedRecent = !expandedRecent }
+            onClick = { expandedRecent = !expandedRecent },
         ) {
             if (foodList.isEmpty()) {
-                Text("No food items yet")
+
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+
+                    Text(
+                        "📦",
+                        fontSize = 36.sp
+                    )
+
+                    Spacer(modifier = Modifier.height(6.dp))
+
+                    Text(
+                        "No food items yet",
+                        fontWeight = FontWeight.SemiBold
+                    )
+
+                    Text(
+                        "Start adding food to track expiry dates",
+                        fontSize = 12.sp,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
             } else {
                 foodList.takeLast(3).forEach {
                     Text("• ${it.name}")
@@ -149,8 +153,8 @@ fun HomeScreen(navController: NavController, viewModel: FoodViewModel) {
 
                     val color = when {
                         daysLeft <= 1 -> MaterialTheme.colorScheme.error
-                        daysLeft <= 2 -> Color(0xFFFF9800)
-                        else -> Color(0xFF4CAF50)
+                        daysLeft <= 2 -> MaterialTheme.colorScheme.tertiary
+                        else -> MaterialTheme.colorScheme.primary
                     }
 
                     Row(verticalAlignment = Alignment.CenterVertically) {
@@ -172,37 +176,106 @@ fun HomeScreen(navController: NavController, viewModel: FoodViewModel) {
                 }
             }
         }
-    }
-}
 
-//components
+        // info cards
+        Spacer(modifier = Modifier.height(14.dp))
 
-@Composable
-fun RowScope.ActionCard(
-    title: String,
-    icon: String,
-    color: Color,
-    onClick: () -> Unit
-) {
-    Card(
-        modifier = Modifier
-            .weight(1f)
-            .height(90.dp)
-            .clickable { onClick() },
-        shape = RoundedCornerShape(18.dp),
-        colors = CardDefaults.cardColors(containerColor = color)
-    ) {
-        Column(
-            modifier = Modifier.padding(12.dp),
-            verticalArrangement = Arrangement.Center
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            Text(icon, fontSize = 22.sp)
-            Spacer(modifier = Modifier.height(6.dp))
-            Text(title, fontWeight = FontWeight.SemiBold)
+
+            // food tip
+            Card(
+                modifier = Modifier
+                    .weight(1f)
+                    .height(140.dp),
+                shape = RoundedCornerShape(18.dp),
+                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+            ) {
+
+                Column(
+                    modifier = Modifier.padding(14.dp),
+                    verticalArrangement = Arrangement.SpaceBetween
+                ) {
+
+                    Text(
+                        "💡 Food Tip",
+                        fontWeight = FontWeight.Bold
+                    )
+
+                    Text(
+                        "Store vegetables in airtight containers to keep them fresh longer.",
+                        fontSize = 12.sp
+                    )
+                }
+            }
+
+            // sdg card
+            Card(
+                modifier = Modifier
+                    .weight(1f)
+                    .height(140.dp),
+                shape = RoundedCornerShape(18.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.primaryContainer
+                )
+            ) {
+
+                Column(
+                    modifier = Modifier.padding(14.dp),
+                    verticalArrangement = Arrangement.SpaceBetween
+                ) {
+
+                    Text(
+                        "🌍 SDG 12",
+                        fontWeight = FontWeight.Bold
+                    )
+
+                    Text(
+                        "FreshKeeper helps reduce food waste through smart tracking.",
+                        fontSize = 12.sp
+                    )
+                }
+            }
+        }
+
+
+
+
+        // recipe preview
+        Spacer(modifier = Modifier.height(14.dp))
+
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(18.dp),
+            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        ) {
+
+            Column(modifier = Modifier.padding(14.dp)) {
+
+                Text(
+                    "🍽 Suggested Recipe",
+                    fontWeight = FontWeight.Bold
+                )
+
+                Spacer(modifier = Modifier.height(6.dp))
+
+                if (foodList.isEmpty()) {
+                    Text("Add food items to get recipe suggestions.")
+                } else {
+                    Text(
+                        "Try making ${getRecipe(foodList.last().name)}"
+                    )
+                }
+            }
         }
     }
 }
 
+
+
+//for expanded card
 @Composable
 fun ExpandCard(
     title: String,
@@ -238,12 +311,21 @@ fun ExpandCard(
     }
 }
 
+
+//it creates a reusable ui header across all screens to maintain consistent design.
 @Composable
 fun AppHeader(
     title: String,
     subtitle: String,
     showProfile: Boolean = true
 ) {
+
+    val greeting = when (java.util.Calendar.getInstance().get(java.util.Calendar.HOUR_OF_DAY)) {
+        in 0..11 -> "Good Morning ☀️"
+        in 12..17 -> "Good Afternoon 🌤"
+        else -> "Good Evening 🌙"
+    }
+
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(18.dp),
@@ -291,7 +373,7 @@ fun AppHeader(
 
                     Column {
                         Text(
-                            "Welcome !",
+                            greeting,
                             fontSize = 12.sp,
                             color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.9f)
                         )
